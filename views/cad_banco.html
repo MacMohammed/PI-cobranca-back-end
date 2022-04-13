@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../assets/css/cad_banco.css" media="">
+    <title>Bem Vindo a SGR</title>
+</head>
+<body>
+    
+    <!-- Menu -->
+    <p>Mac</p>
+    <nav class="menu">
+        <ul>
+            <li class="novo" onclick="location.href='../../PI-cobranca/views/form_banco.html'">Novo Banco
+            </li> 
+            <li class="voltar" onclick="location.href='pginicial'">Voltar
+            </li>   
+            <li class="sair" onclick="location.href='../../PI-cobranca/views/index.html'">Sair             
+            </li>   
+        </ul>
+
+    </nav>
+
+    <!-- Tabela -->
+        <table class="tab" border="1">
+            <caption>Tabela de Bancos</caption>
+            <thead>
+                <tr class="title">
+                    <th>Id</th>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Status</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>101</td>
+                <td>001</td>
+                <td>Banco de Brasil S/A</td>
+                <td>ATIVO</td>
+                <td><button class="button" >Editar</button></td>
+
+            </tr>
+            <tr>
+                <td>222</td>
+                <td>237</td>
+                <td>Bradesco S/A</td>
+                <td>ATIVO</td>
+                <td><button class="button" >Editar</button></td>
+            </tr>
+            <tr>
+                <td>500</td>
+                <td>104</td>
+                <td>Caixa Econômica Federal</td>
+                <td>INATIVO</td>
+                <td><button class="button" >Editar</button></td>
+            </tr>
+            </tbody>
+        </table>
+</body>
+</html>

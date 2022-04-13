@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../assets/css/form_usuario.css" media="">
+    <title>Bem Vindo a SGR</title>
+</head>
+<body>
+    
+<!-- Formulário  Usuário   -->
+<form>
+    
+    <fieldset class="group">
+
+        <div class="title">
+            <H1>Cadastro de Usuário</H1>
+            <br>
+        </div>
+
+        <div class="field">
+            <label><strong>Nome do Usuário</strong></label>
+            <input type="text" name="username" id="username" required>
+            <br>
+            <label><strong>Cargo</strong></label>
+            <select name="office" id="office">
+                <option value="0"></option>
+                <option value="1">Gerente</option>
+                <option value="2">Auxiliar Administrativo</option>
+                <option value="3">Técnico em Informática</option>
+             </select>
+            <br>
+            <label><strong>E-mail</strong></label>
+            <input type="email" name="useremail" id="useremail" required>
+            <br>
+            <label><strong>Senha</strong></label>
+            <input type="password" name="password" id="password" required>
+            <br>
+        </div>
+        <div class="radio">
+            <label><strong>Status</strong></label>
+            <input type="radio" name="status" checked> Ativo
+            <input type="radio" name="status" > Inativo
+
+        </div>
+        <br>
+        <div class="button">
+            <button type="submit" >Salvar</button>
+            <button type="button" onclick="location.href='../../PI-cobranca/views/cad_usuario.html'">Cancelar</button>
+            <button type="button" onclick="location.href='../../PI-cobranca/views/index.html'">Sair</button>                      
+        </div>
+    </fieldset>
+
+   </form>
+</body>
+</html>
