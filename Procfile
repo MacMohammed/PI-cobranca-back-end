@@ -1,1 +1,1 @@
-"web: currency" > Procfile
+web: bin/fatec
