@@ -3,27 +3,13 @@ package routes
 import (
 	"fatec/controllers"
 	"fatec/cookie"
-	"fatec/middlewares"
-	"fatec/pages"
-	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 func LoadRoutes(rtr *mux.Router) {
-	fileServer := http.FileServer(http.Dir("./assets/"))
-	rtr.PathPrefix("/assets/").Handler(http.StripPrefix("/assets", fileServer))
-
-	//Metodos implantados
-	rtr.HandleFunc("/login", controllers.EnterUser).Methods("POST")
-	rtr.HandleFunc("/", pages.CarregarTelaLogin).Methods("GET")
-	rtr.HandleFunc("/pginicial", middlewares.Logger(middlewares.Autenticar(pages.CarregarTelaPgInicial))).Methods("GET")
-	rtr.HandleFunc("/pgCadUser", pages.CarregarTelaPgCadUser).Methods("GET")
-	rtr.HandleFunc("/pgCadCliente", pages.CarregarTelaPgCadCliente).Methods("GET")
-	rtr.HandleFunc("/pgBanco", pages.CarregarTelaPgBancol).Methods("GET")
 
 	//Teste de Cookie
-	rtr.HandleFunc("/testeToken", middlewares.Logger(middlewares.Autenticar(pages.CarregarTelaCadastro))).Methods("GET")
 	rtr.HandleFunc("/deleteCookie", cookie.DeleteCookie).Methods("GET")
 
 	//Teste de User
