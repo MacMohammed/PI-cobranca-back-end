@@ -91,7 +91,9 @@ func NewTransaction(t Transacao) error {
 	defer db.Close()
 
 	insertDataTransaction, err := db.Prepare(`insert into transacao(data_emissao, data_vencimento, nf_servico, id_banco, id_cliente, valor) 
-		values($1, $2, $3, $4, $5, $6)`)
+		values($1, $2, $3, $4, $5, $6);`)
+	// insertDataTransaction, err := db.Prepare(`insert into transacao(data_emissao, data_vencimento, nf_servico, id_banco, id_cliente, valor)
+	// 	values($1, $2, $3, $4, $5, $6) on conflict on constraint unq_transacao do nothing`)
 
 	if err != nil {
 		return err

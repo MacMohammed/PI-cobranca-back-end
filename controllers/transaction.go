@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"fatec/respostas"
+
 	"github.com/gorilla/mux"
 )
 
@@ -49,10 +51,11 @@ func InsertTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := models.NewTransaction(transactions); err != nil {
-		json.NewEncoder(w).Encode(err)
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
 	}
 
-	json.NewEncoder(w).Encode("Transação cadastrada com sucesso")
+	respostas.JSON(w, http.StatusCreated, "Transação cadastrada com sucesso")
 }
 
 func DeleteTransaction(w http.ResponseWriter, r *http.Request) {
