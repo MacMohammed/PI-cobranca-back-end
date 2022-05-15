@@ -13,11 +13,12 @@ func LoadRoutes(rtr *mux.Router) {
 	rtr.HandleFunc("/deleteCookie", cookie.DeleteCookie).Methods("GET")
 
 	//Teste de User
+	rtr.HandleFunc("/user", controllers.GetUser).Methods("GET")
 	rtr.HandleFunc("/users", controllers.AllUsers).Methods("GET")
-	rtr.HandleFunc("/GetUser", controllers.GetUser).Methods("POST")
-	rtr.HandleFunc("/UpdateUser", controllers.UpdateUser).Methods("POST")
-	rtr.HandleFunc("/InsertUser", controllers.InsertUser).Methods("POST")
-	rtr.HandleFunc("/DeletetUser", controllers.DeletetUser).Methods("POST")
+	rtr.HandleFunc("/user/update", controllers.UpdateUser).Methods("POST")
+	rtr.HandleFunc("/user/insert", controllers.InsertUser).Methods("POST")
+	rtr.HandleFunc("/user/delete", controllers.DeletetUser).Methods("POST")
+	rtr.HandleFunc("/login", controllers.EnterUser).Methods("POST")
 
 	//Teste de Bank
 	rtr.HandleFunc("/bancos", controllers.AllBank).Methods("GET")
