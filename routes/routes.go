@@ -46,7 +46,7 @@ func LoadRoutes(rtr *mux.Router) {
 	rtr.HandleFunc("/UpdateTransaction", controllers.UpdateTransaction).Methods("POST")
 	rtr.HandleFunc("/transacao", controllers.InsertTransaction).Methods("POST")
 	rtr.HandleFunc("/DeleteTransaction", controllers.DeleteTransaction).Methods("POST")
-	rtr.HandleFunc("/trasancao/{id_transacao}", controllers.TransacaoBaixar).Methods("PUT")
+	rtr.HandleFunc("/trasancao/baixar/{id_transacao}", controllers.TransacaoBaixar).Methods("PUT")
 	rtr.HandleFunc("/trasancao/cancelar/{id_transacao}", controllers.TransacaoCancelar).Methods("PUT")
 
 	//Teste de File
