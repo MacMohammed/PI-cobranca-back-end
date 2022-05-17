@@ -11,7 +11,7 @@ type User struct {
 	Id_user             int    `json:"id_usuario,omitempty"`
 	Name                string `json:"nome,omitempty"`
 	Password            string `json:"senha,omitempty"`
-	Active              bool   `json:"ativo,omitempty`
+	Active              bool   `json:"ativo,omitempty"`
 	Fk_office_id_office int    `json:"id_cargo,omitempty"`
 }
 
@@ -144,7 +144,7 @@ func GetUserByName(name_user string) User {
 	db := db.ConectBD()
 
 	// userBank, err := db.Query("select * from user_system where name_user=$1", name_user)
-	userBank, err := db.Query("select * from usuario where nome=$1", name_user)
+	userBank, err := db.Query("select id_usuario, nome, senha, ativo, cargo from usuario where nome=$1", name_user)
 	if err != nil {
 		panic(err.Error())
 	}

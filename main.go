@@ -18,6 +18,10 @@ func main() {
 
 	port := os.Getenv("PORT")
 
+	if len(port) == 0 {
+		port = "8001"
+	}
+
 	fmt.Printf("Inicializando servidor na porta %s", port)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),

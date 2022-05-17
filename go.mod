@@ -10,5 +10,3 @@ require (
 	github.com/lib/pq v1.10.3
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 )
-
-require github.com/felixge/httpsnoop v1.0.1 // indirect

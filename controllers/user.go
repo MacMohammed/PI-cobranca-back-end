@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fatec/autentication"
 	"fatec/models"
+	"fatec/respostas"
 	"fatec/securit"
 	"fmt"
 	"io/ioutil"
@@ -16,10 +17,11 @@ func InsertUser(w http.ResponseWriter, r *http.Request) {
 
 	body, _ := ioutil.ReadAll(r.Body)                   //captura o conteudo do body (retorno é um lista de bytes)
 	if err := json.Unmarshal(body, &user); err != nil { //encapsula em banco o que vem no body
-		fmt.Print(err)
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
 	}
 	retur := models.NewUser(user)
-	json.NewEncoder(w).Encode(retur)
+	respostas.JSON(w, http.StatusCreated, retur)
 }
 
 func DeletetUser(w http.ResponseWriter, r *http.Request) {
@@ -72,39 +74,39 @@ func EnterUser(w http.ResponseWriter, r *http.Request) {
 
 	body, _ := ioutil.ReadAll(r.Body)
 	if err := json.Unmarshal(body, &user); err != nil {
-		json.NewEncoder(w).Encode(1)
+		respostas.JSON(w, http.StatusBadRequest, err)
+		return
 	}
 
 	//Pega as informações do usuario no BD
-	v := models.GetUserByName(user.Name)
+	u := models.GetUserByName(user.Name)
 
 	//Verifica se os hash da senha são iguais
-	err := securit.VerificarSenha(v.Password, user.Password)
-	// retorno, _ := securit.Hash("123456")
-	// fmt.Println(string(retorno))
+	err := securit.VerificarSenha(u.Password, user.Password)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(fmt.Sprintln("A senhas não são iguais...."))
+		respostas.JSON(w, http.StatusForbidden, "A senhas não são iguais...")
 		return
 	}
 
 	//Criando Token
-	token, err := autentication.CreateToken(uint64(v.Id_user))
+	token, err := autentication.CreateToken(uint64(u.Id_user))
 	if err != nil {
-		json.NewEncoder(w).Encode(2)
+		respostas.JSON(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	var dataAutentication models.DataAutentication
 	dataAutentication.Name = user.Name
 	dataAutentication.AccountID = fmt.Sprintf("%d", user.Id_user)
 	dataAutentication.Token = token
 
-	//Gravando tokie no Cookie
+	// Gravando tokie no Cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:  "Authorization",
 		Value: token,
 	})
 
 	w.Header().Set("Authorization", token)
-	json.NewEncoder(w).Encode(dataAutentication)
+	respostas.JSON(w, http.StatusCreated, dataAutentication)
 }
