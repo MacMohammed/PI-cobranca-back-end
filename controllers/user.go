@@ -85,7 +85,7 @@ func EnterUser(w http.ResponseWriter, r *http.Request) {
 	err := securit.VerificarSenha(u.Password, user.Password)
 
 	if err != nil {
-		respostas.JSON(w, http.StatusForbidden, "A senhas não são iguais...")
+		respostas.JSON(w, http.StatusBadRequest, "A senhas não são iguais...")
 		return
 	}
 
