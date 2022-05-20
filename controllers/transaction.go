@@ -100,3 +100,19 @@ func TransacaoCancelar(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(fmt.Sprintf("O título %d foi cancelado com sucesso.", id_transacao))
 }
+
+func TransacaoExtornar(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	id_transacao, err := strconv.ParseUint(parametros["id_transacao"], 10, 64)
+	if err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	if err = models.ExtornarTitulo(id_transacao); err != nil {
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	json.NewEncoder(w).Encode(fmt.Sprintf("O título %d foi extornado com sucesso.", id_transacao))
+}

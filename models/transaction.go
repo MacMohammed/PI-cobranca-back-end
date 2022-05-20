@@ -204,3 +204,26 @@ func CancelarTitulo(id_transacao uint64) error {
 
 	return nil
 }
+
+func ExtornarTitulo(id_transacao uint64) error {
+	db := db.ConectBD()
+	defer db.Close()
+
+	prepare, err := db.Prepare(`update transacao 
+		set extornado = true, 
+		extornado_em = now(), 
+		liquidado = false 
+	where 
+		id_transacao = $1`)
+
+	if err != nil {
+		return fmt.Errorf("erro ao tentar extornar o título %d\n%s", id_transacao, err)
+	}
+
+	_, err = prepare.Exec(id_transacao)
+	if err != nil {
+		return fmt.Errorf("erro ao tentar extornar o título %d\n%s", id_transacao, err)
+	}
+
+	return nil
+}

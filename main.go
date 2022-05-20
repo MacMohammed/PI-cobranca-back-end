@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fatec/routes"
+	"fatec/router"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,12 +9,10 @@ import (
 	"os"
 
 	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 )
 
 func main() {
-	rtr := mux.NewRouter()
-	routes.LoadRoutes(rtr)
+	rtr := router.GerarRotas()
 
 	port := os.Getenv("PORT")
 

@@ -8,47 +8,42 @@ import (
 )
 
 //Struct criado para refletir a tabela do BD
-type Office struct {
-	Id_office   int
-	Description string
+type Cargo struct {
+	IDCargo   int    `json:"id,omitempty"`
+	Descricao string `json:"descricao"`
 }
 
-func AllOffice() map[int]Office {
+func GetCargos() ([]Cargo, error) {
 	//Conecta com Postgres
 	db := db.ConectBD()
 
 	//Executa uma  query ono postgres
-	selectAllOffice, err := db.Query("select * from office order by id_office asc")
+	rows, err := db.Query("select id_cargo, descricao from cargo order by id_cargo;")
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
-	//Lê a query e armazena num slice
-	o := Office{}
-	mapOffice := make(map[int]Office)
-	for selectAllOffice.Next() {
-		var id_office, description string
+	defer rows.Close()
 
-		err := selectAllOffice.Scan(&id_office, &description)
-		if err != nil {
-			panic(err.Error())
+	var cargos []Cargo
+
+	for rows.Next() {
+		var cargo Cargo
+		if err = rows.Scan(
+			&cargo.IDCargo,
+			&cargo.Descricao); err != nil {
+			return nil, err
 		}
 
-		id_OfficeConvertedForInt, err := strconv.Atoi(id_office)
-		if err != nil {
-			log.Println("Conversion error: ", err)
-		}
-
-		o.Id_office = id_OfficeConvertedForInt
-		o.Description = description
-
-		mapOffice[o.Id_office] = o
+		cargos = append(cargos, cargo)
 	}
+
 	defer db.Close()
-	return mapOffice
+
+	return cargos, nil
 }
 
-func NewOffice(office Office) int {
+func NewOffice(office Cargo) int {
 	db := db.ConectBD()
 
 	insertDataOffice, err := db.Prepare("insert into office(description) values($1)")
@@ -57,12 +52,12 @@ func NewOffice(office Office) int {
 		return 1
 	}
 
-	insertDataOffice.Exec(office.Description)
+	insertDataOffice.Exec(office.Descricao)
 	defer db.Close()
 	return 0
 }
 
-func DeleteOffice(office Office) int {
+func DeleteOffice(office Cargo) int {
 	db := db.ConectBD()
 
 	deletBank, err := db.Prepare("delete from office where id_office=$1")
@@ -70,7 +65,7 @@ func DeleteOffice(office Office) int {
 		return 1
 	}
 
-	_, err = deletBank.Exec(office.Id_office)
+	_, err = deletBank.Exec(office.IDCargo)
 	if err != nil {
 		return 1
 	}
@@ -80,37 +75,37 @@ func DeleteOffice(office Office) int {
 }
 
 //Mudar a struct para os tupos de variaveis do banco e adaptar o método
-func GetOffice(id_office int) Office {
+func GetOffice(id_office int) Cargo {
 	db := db.ConectBD()
 
-	offices, err := db.Query("select * from office where id_office=$1", id_office)
+	offices, err := db.Query("select * from cargo where id_cargo=$1", id_office)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	office := Office{}
+	office := Cargo{}
 	for offices.Next() {
-		var id_office, description string
+		var id_cargo, descricao string
 
-		err = offices.Scan(&id_office, &description)
+		err = offices.Scan(&id_cargo, &descricao)
 		if err != nil {
 			panic(err.Error())
 		}
 
-		id_officeConvertedForInt, err := strconv.Atoi(id_office)
+		id_officeConvertedForInt, err := strconv.Atoi(id_cargo)
 		if err != nil {
 			log.Println("Conversion error: ", err)
 		}
 
-		office.Id_office = id_officeConvertedForInt
-		office.Description = description
+		office.IDCargo = id_officeConvertedForInt
+		office.Descricao = descricao
 	}
 	defer db.Close()
 	return office
 }
 
 //Mudar a struct para os tupos de variaveis do banco e adaptar o método
-func UpdateOffice(office Office) int {
+func UpdateOffice(office Cargo) int {
 	db := db.ConectBD()
 
 	UpdateOffices, err := db.Prepare("update office set description = $1 where id_office=$2")
@@ -119,7 +114,7 @@ func UpdateOffice(office Office) int {
 		return 1
 	}
 
-	UpdateOffices.Exec(office.Description, office.Id_office)
+	UpdateOffices.Exec(office.Descricao, office.IDCargo)
 	defer db.Close()
 	return 0
 }

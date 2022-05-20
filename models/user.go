@@ -1,9 +1,11 @@
 package models
 
 import (
+	"errors"
 	"fatec/db"
 	"log"
 	"strconv"
+	"strings"
 )
 
 //Struct criado para refletir a tabela do BD
@@ -62,17 +64,25 @@ func AllUser() map[int]User {
 	return users
 }
 
-func NewUser(user User) int {
+func NewUser(user User) (int, error) {
 	db := db.ConectBD()
 
-	insertDataBank, err := db.Prepare("insert into user_system (name_user, secret, fk_office_id_office) values($1, $2, $3)")
+	query := `insert into usuario (nome, senha, cargo) values($1, $2, $3) on conflict on constraint unique_name do nothing returning id_usuario`
+
+	stmt, err := db.Prepare(query)
 	if err != nil {
-		return 1
+		return 0, err
 	}
 
-	insertDataBank.Exec(user.Name, user.Password, strconv.Itoa(user.Fk_office_id_office))
 	defer db.Close()
-	return 0
+
+	var userID int
+	err = stmt.QueryRow(user.Name, user.Password, strconv.Itoa(user.Fk_office_id_office)).Scan(&userID)
+	if err != nil {
+		return 0, err
+	}
+
+	return int(userID), nil
 }
 
 func DeleteUser(user User) int {
@@ -178,4 +188,25 @@ func GetUserByName(name_user string) User {
 	}
 	defer db.Close()
 	return user
+}
+
+//Preparar chama os métodos de validar e formatar o usuário recebido
+func (user *User) Preparar() error {
+	if err := user.validar(); err != nil {
+		return err
+	}
+
+	user.formatar()
+	return nil
+}
+
+func (user *User) formatar() {
+	user.Name = strings.TrimSpace(user.Name)
+}
+
+func (user *User) validar() error {
+	if user.Name == "" {
+		return errors.New("o nome do usuário é obrigatório e não pode estar em branco")
+	}
+	return nil
 }

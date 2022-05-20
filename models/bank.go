@@ -9,9 +9,9 @@ import (
 
 //Struct criado para refletir a tabela do BD
 type Bank struct {
-	Id_bank int
-	Name    string
-	Cod     int
+	Id_bank int    `json:"id,omitempty"`
+	Name    string `json:"nome,omitempty"`
+	Cod     int    `json:"codigo_febraban,omitempty"`
 }
 
 func AllBank() []Bank {
@@ -49,7 +49,7 @@ func AllBank() []Bank {
 func NewBank(bank Bank) {
 	db := db.ConectBD()
 
-	insertDataBank, err := db.Prepare("insert into bank(name, cod) values($1, $2)")
+	insertDataBank, err := db.Prepare("insert into banco(name, cod) values($1, $2)")
 	if err != nil {
 		panic(err.Error())
 	}
