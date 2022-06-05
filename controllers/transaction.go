@@ -14,6 +14,19 @@ import (
 )
 
 func AllTransaction(w http.ResponseWriter, r *http.Request) {
+	dt_inicial := r.URL.Query().Get("dt-ini")
+	dt_final := r.URL.Query().Get("dt-fin")
+
+	if len(dt_inicial) > 0 && len(dt_final) > 0 {
+		transactions, err := models.AllTransactionForPeriod(dt_inicial, dt_final)
+		if err != nil {
+			respostas.JSON(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respostas.JSON(w, http.StatusOK, transactions)
+		return
+	}
+
 	transactions := models.AllTransaction()
 	json.NewEncoder(w).Encode(transactions)
 }

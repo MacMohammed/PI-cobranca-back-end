@@ -86,6 +86,64 @@ func AllTransaction() []Transacao {
 	return trasacoes
 }
 
+func AllTransactionForPeriod(dtini, dtfin string) ([]Transacao, error) {
+	//Conecta com Postgres
+	db := db.ConectBD()
+	defer db.Close()
+
+	//Executa uma  query no postgres
+	rows, err := db.Query(`select 
+								t.id_transacao,
+								to_char(t.dt_hr_reg, 'DD/MM/YYYY HH24:MI') as dt_hr_reg,
+								to_char(t.data_emissao, 'DD/MM/YYYY') as data_emissao,
+								to_char(t.data_vencimento,'DD/MM/YYYY') as data_vencimento,
+								t.nf_servico,
+								t.valor,
+								b.nome as banco,
+								c.nome as cliente,
+								t.liquidado::text as liquidado,
+								to_char(coalesce(t.liquidado_em, '1111-11-11')::date, 'DD/MM/YYYY') as liquidado_em,
+								t.cancelado::text as cancelado,
+								to_char(coalesce(t.cancelado_em, '1111-11-11')::date, 'DD/MM/YYYY') as cancelado_em
+						from transacao t
+							inner join banco b using (id_banco)
+							inner join cliente c using (id_cliente)
+					where 
+						t.dt_hr_reg::date between $1 and $2
+					order by t.id_transacao;`, dtini, dtfin)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var trasacoes []Transacao
+
+	for rows.Next() {
+		var transacao Transacao
+
+		if err := rows.Scan(
+			&transacao.IDTransacao,
+			&transacao.DT_HR_REG,
+			&transacao.Data_Emissao,
+			&transacao.Data_Vencimento,
+			&transacao.NF_Servico,
+			&transacao.Valor,
+			&transacao.Banco,
+			&transacao.Cliente,
+			&transacao.Liquidado,
+			&transacao.Liquidado_EM,
+			&transacao.Cancelado,
+			&transacao.Cancelado_EM,
+		); err != nil {
+			fmt.Println(err)
+		}
+		trasacoes = append(trasacoes, transacao)
+	}
+	return trasacoes, nil
+}
+
 func NewTransaction(t Transacao) error {
 	db := db.ConectBD()
 	defer db.Close()
