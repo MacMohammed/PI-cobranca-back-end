@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fatec/models"
+	"fatec/respostas"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -42,20 +43,22 @@ func InsertBank(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		json.NewEncoder(w).Encode(fmt.Errorf("ocorreu um erro %s", err))
+		respostas.JSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	fmt.Println(body)
+	var bank models.Bank
 
-	// var bank models.Bank
+	if err := json.Unmarshal(body, &bank); err != nil {
+		respostas.JSON(w, http.StatusInternalServerError, err.Error())
+	}
 
-	// if err := json.Unmarshal(body, &bank); err != nil {
-	// 	json.NewEncoder(w).Encode(1)
-	// }
+	id_banco, err := models.NewBank(bank)
+	if err != nil {
+		respostas.JSON(w, http.StatusInternalServerError, err.Error())
+	}
 
-	// models.NewBank(bank)
-	// json.NewEncoder(w).Encode(0)
+	respostas.JSON(w, http.StatusCreated, fmt.Sprintf("O banco %s (%d) foi criado com sucesso", bank.Name, id_banco))
 }
 
 func DeleteBank(w http.ResponseWriter, r *http.Request) {

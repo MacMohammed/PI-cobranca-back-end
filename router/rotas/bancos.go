@@ -12,6 +12,12 @@ var rotaBancos = []Rota{
 		Funcao:           controllers.AllBank,
 		RequerAutenticao: false,
 	},
+	{
+		URI:              "/bancos",
+		Metodo:           http.MethodPost,
+		Funcao:           controllers.InsertBank,
+		RequerAutenticao: false,
+	},
 }
 
 // 	//Teste de Bank

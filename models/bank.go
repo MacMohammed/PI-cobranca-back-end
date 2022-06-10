@@ -10,8 +10,10 @@ import (
 //Struct criado para refletir a tabela do BD
 type Bank struct {
 	Id_bank int    `json:"id,omitempty"`
+	DtHrReg string `json:"dt_hr_reg,omitempty"`
 	Name    string `json:"nome,omitempty"`
 	Cod     int    `json:"codigo_febraban,omitempty"`
+	Ativo   bool   `json:"ativo,omitempty"`
 }
 
 func AllBank() []Bank {
@@ -46,16 +48,24 @@ func AllBank() []Bank {
 	return bancos
 }
 
-func NewBank(bank Bank) {
+func NewBank(bank Bank) (int, error) {
 	db := db.ConectBD()
 
-	insertDataBank, err := db.Prepare("insert into banco(name, cod) values($1, $2)")
+	query := `insert into banco(nome, codigo) values($1, $2) returning id_banco;`
+
+	smt, err := db.Prepare(query)
 	if err != nil {
-		panic(err.Error())
+		return 0, err
+	}
+	defer db.Close()
+
+	var id_banco int
+	if err = smt.QueryRow(bank.Name, bank.Cod).Scan(&id_banco); err != nil {
+		return 0, err
 	}
 
-	insertDataBank.Exec(bank.Name, bank.Cod)
-	defer db.Close()
+	return id_banco, nil
+
 }
 
 func DeleteBank(bank Bank) int {
