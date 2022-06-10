@@ -67,9 +67,9 @@ func NewBank(bank Bank) (int, error) {
 		banco_ja_existe bool
 	)
 
-	// if err = smt.QueryRow(bank.Name, bank.Cod).Scan(&id_banco, &banco_ja_existe); err != nil {
-	// 	return 0, err
-	// }
+	if err = smt.QueryRow(bank.Name, bank.Cod).Scan(&id_banco, &banco_ja_existe); err != nil {
+		return 0, err
+	}
 
 	if banco_ja_existe {
 		return id_banco, errors.New(fmt.Sprintf("o banco %s já está cadastrado no banco.", bank.Name))
