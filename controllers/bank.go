@@ -51,11 +51,13 @@ func InsertBank(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.Unmarshal(body, &bank); err != nil {
 		respostas.JSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	id_banco, err := models.NewBank(bank)
 	if err != nil {
 		respostas.JSON(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	respostas.JSON(w, http.StatusCreated, fmt.Sprintf("O banco %s (%d) foi criado com sucesso", bank.Name, id_banco))

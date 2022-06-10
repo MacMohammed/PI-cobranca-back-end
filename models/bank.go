@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fatec/db"
 	"fmt"
 	"log"
@@ -51,7 +52,9 @@ func AllBank() []Bank {
 func NewBank(bank Bank) (int, error) {
 	db := db.ConectBD()
 
-	query := `insert into banco(nome, codigo) values($1, $2) returning id_banco;`
+	query := `insert into banco (nome, codigo) values ($1, $2) on conflict on constraint unq_codigo_banco do update  
+	set nome = excluded.nome
+	RETURNING id_banco , (xmax::text::int > 0) as banco_ja_existe;`
 
 	smt, err := db.Prepare(query)
 	if err != nil {
@@ -59,9 +62,17 @@ func NewBank(bank Bank) (int, error) {
 	}
 	defer db.Close()
 
-	var id_banco int
-	if err = smt.QueryRow(bank.Name, bank.Cod).Scan(&id_banco); err != nil {
+	var (
+		id_banco        int
+		banco_ja_existe bool
+	)
+
+	if err = smt.QueryRow(bank.Name, bank.Cod).Scan(&id_banco, &banco_ja_existe); err != nil {
 		return 0, err
+	}
+
+	if banco_ja_existe {
+		return id_banco, errors.New(fmt.Sprintf("o banco %s já está cadastrado no banco.", bank.Name))
 	}
 
 	return id_banco, nil
