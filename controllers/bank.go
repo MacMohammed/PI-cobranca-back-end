@@ -54,13 +54,14 @@ func InsertBank(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id_banco, err := models.NewBank(bank)
+	// id_banco, err := models.NewBank(bank)
+	_, err = models.NewBank(bank)
 	if err != nil {
 		respostas.JSON(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respostas.JSON(w, http.StatusCreated, fmt.Sprintf("O banco %s (%d) foi criado com sucesso", bank.Name, id_banco))
+	// respostas.JSON(w, http.StatusCreated, fmt.Sprintf("O banco %s (%d) foi criado com sucesso", bank.Name, id_banco))
 }
 
 func DeleteBank(w http.ResponseWriter, r *http.Request) {
