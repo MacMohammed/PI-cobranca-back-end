@@ -71,7 +71,7 @@ func NewBank(bank Bank) (int, error) {
 	}
 
 	if banco_ja_existe {
-		return id_banco, fmt.Errorf("o banco %s (%d) já está cadastrado no banco", bank.Name, id_banco)
+		return id_banco, fmt.Errorf("o banco %s (%d) já está cadastrado", bank.Name, id_banco)
 	}
 
 	return id_banco, nil
