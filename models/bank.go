@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"fatec/db"
 	"fmt"
 	"log"
@@ -68,11 +67,11 @@ func NewBank(bank Bank) (int, error) {
 	)
 
 	if err = smt.QueryRow(bank.Name, bank.Cod).Scan(&id_banco, &banco_ja_existe); err != nil {
-		return 0, err
+		return id_banco, err
 	}
 
 	if banco_ja_existe {
-		return id_banco, errors.New(fmt.Sprintf("o banco %s já está cadastrado no banco.", bank.Name))
+		return id_banco, fmt.Errorf("o banco %s (%d) já está cadastrado no banco", bank.Name, id_banco)
 	}
 
 	return id_banco, nil
